@@ -40,6 +40,16 @@ class TodoDAOTest {
     }
 
     @Test
+    public void insertTodoDummy() {
+        for (int i = 1; i < 100; i++) {
+            TodoVO todoVO = TodoVO.builder()
+                    .title("제목" + i)
+                    .dueDate(LocalDate.of(2026, 2, 1).plusDays(1)).build();
+            todoDAO.insert(todoVO);
+        }
+    }
+
+    @Test
     public void selectAllTest() {
         var todos = todoDAO.selectAll();
 

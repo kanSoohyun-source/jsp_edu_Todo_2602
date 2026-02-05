@@ -52,6 +52,16 @@ public enum TodoService {
         return modelMapper.map(todoDAO.selectOne(tno), TodoDTO.class);
     }
 
+    // todo 수정
+    public  void modify(TodoDTO todoDTO) {
+        todoDAO.update(modelMapper.map(todoDTO, TodoVO.class));
+    }
+
+    // todo 삭제
+    public void remove(long tno) {
+        todoDAO.delete(tno);
+    }
+
 
 
 

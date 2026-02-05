@@ -9,6 +9,7 @@
       <ul class="navbar-nav mr-auto">
         <li class="nav-item"><a class="nav-link" href="/todo/list">Todo</a></li>
         <li class="nav-item"><a class="nav-link" href="/todo/add">add</a></li>
+        <li class="nav-item"><a class="nav-link" href="/logout">logout</a></li>
       </ul>
     </div>
   </div>

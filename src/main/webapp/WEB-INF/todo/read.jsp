@@ -50,12 +50,28 @@
                 </div>
                 <div class="form-group row">
                     <div class="col-sm-offset-2 col-sm-10">
-                        <a href="./boardDelete.do?bno=<%=todoDTO.getTno()%>" class="btn btn-danger">삭제</a>
-                        <a href="./boardModifyForm.do?bno=<%=todoDTO.getTno()%>" class="btn btn-danger">수정</a>
+                        <a href="#" class="btn btn-danger" id="btnRemove">삭제</a>
+                        <a href="../todo/modify?tno=<%=todoDTO.getTno()%>" class="btn btn-danger">수정</a>
                         <a href="../todo/list" class="btn btn-primary">목록</a>
                     </div>
                 </div>
             </div>
+            <form name="frmRemoveTodo" method="post" action="/todo/remove">
+                <input type="hidden" name="tno" value="<%=todoDTO.getTno()%>">
+            </form>
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    const btnRemove = document.querySelector('#btnRemove')
+                    btnRemove.addEventListener('click', function (event) {
+                        event.preventDefault() // a 태그 링크 존재 시 이동 막는 용도
+                        // alert(1111);
+                        if (confirm("삭제하시겠습니까?")) {
+                            const frm = document.querySelector('form[name=frmRemoveTodo]')
+                            frm.submit();
+                        }
+                    })
+                })
+            </script>
 
         </div>
         <hr>
