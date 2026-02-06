@@ -7,6 +7,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.log4j.Log4j2;
+import org.example.jsp_edu_todo_2602.dto.MemberDTO;
+import org.example.jsp_edu_todo_2602.service.MemberService;
 
 import java.io.IOException;
 
@@ -27,27 +29,39 @@ public class LoginCheckFilter implements Filter {
         HttpServletResponse resp = (HttpServletResponse) response;
 
         HttpSession session = req.getSession();
-        if (session.getAttribute("loginInfo") == null) { // 로그인하지 않은 경우
-            log.info("session.loginInfo is null");
+
+        // 1. 로그인한 사용자인 경우 => loginInfo가 null이 아닌 경우
+        if (session.getAttribute("loginInfo") != null) {
+            chain.doFilter(request, response);
+            return;
+        }
+
+        // 2. 로그인하지 않은 사용자인 경우 -> session.getAttribute("loginInfo") == null
+        // => 위에서 null이 아닌 경우를 이미 걸러낸 상태
+        Cookie cookie = findcookie(req.getCookies(), "remember-me");
+        // 1) remember-me가 없는 경우
+        if (cookie == null) {
+            log.info("not exist remember-me cookie");
             resp.sendRedirect("/login");
             return;
         }
 
-        // 1. 로그인한 사용자인 경우
-
-
-        // 2. 로그인하지 않은 사용자인 경우
-        // 1) remember-me가 없는 경우
-
-
-        // 2) remember-me는 있는데 DB에 없는 경우
-
+        // 2) remember-me는 있는데 DB에 없는 경우 => 로그인 처리 불가
+        // DB에서 UUID 조회
+        String uuid = cookie.getValue();
+        log.info(uuid);
+        MemberDTO memberDTO = MemberService.INSTANCE.getMemberByUuid(uuid);
+        log.info(memberDTO);
+        if (memberDTO == null) {
+            log.info("exist remember-me cookie, not exist DB");
+            resp.sendRedirect("/login");
+            return;
+        }
 
         // 3) remember-me도 있고 DB에도 있는 경우
-
-
-
-
+        // 이미 remember-me의 존재여부, DB 안에 존재 여부가 위에서 이미 확인됨
+        log.info("auto-login");
+        session.setAttribute("loginInfo", memberDTO.getMemberId() + memberDTO.getPasswd());
 
         // 있으면 다음 필터 동작, 없으면 로그인 페이지로 이동
 
@@ -72,9 +86,9 @@ public class LoginCheckFilter implements Filter {
          */
         Cookie findcookie = null;
 
-        if(cookies != null && cookies.length > 0) { // 매개변수로 받는 쿠키가 있는 경우
-            for(Cookie cookie : cookies) {
-                if(cookie.getName().equals(cookieName)) { // 쿠키 이름이 일치하는 경우
+        if (cookies != null && cookies.length > 0) { // 매개변수로 받는 쿠키가 있는 경우
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals(cookieName)) { // 쿠키 이름이 일치하는 경우
                     findcookie = cookie;
                     break;
                 }

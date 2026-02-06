@@ -29,15 +29,19 @@ public enum MemberService {
         return isAuth;
     }
 
+    // UUID 수정
     public void modifyUuid(String memberId, String uuid) {
         memberDAO.updateUuid(memberId, uuid);
     }
 
     public MemberDTO getMemberByUuid(String uuid) {
-        MemberVo memberVo = memberDAO.selectOne(uuid);
-        MemberDTO memberDTO = modelMapper.map(memberVo, MemberDTO.class);
-        log.info(memberDTO);
-        return memberDTO;
+        MemberVo memberVo = memberDAO.selectByUuid(uuid);
+        if(memberVo != null) {
+            MemberDTO memberDTO = modelMapper.map(memberVo, MemberDTO.class);
+            log.info(memberDTO);
+            return memberDTO;
+        }
+        return null;
     }
 
 }

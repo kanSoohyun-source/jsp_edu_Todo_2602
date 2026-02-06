@@ -31,7 +31,6 @@ public class MemberDAO {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     public void updateUuid(String memberId, String uuid) {
